@@ -94,6 +94,15 @@ opacity:0.85;
 }
 
 
+button:disabled{
+
+opacity:0.5;
+
+cursor:not-allowed;
+
+}
+
+
 input,textarea{
 
 width:100%;
@@ -146,6 +155,26 @@ margin:15px 0;
 background:#8b3a3a;
 
 margin-top:10px;
+
+}
+
+
+.status{
+
+text-align:center;
+
+font-size:14px;
+
+color:#8a8a8a;
+
+margin:5px 0 15px 0;
+
+}
+
+
+.status.error{
+
+color:#b23a3a;
 
 }
 
@@ -245,6 +274,10 @@ Shanghai Branch
 </p>
 
 
+<p id="syncStatus" class="status">
+云端同步中...
+</p>
+
 
 
 
@@ -307,7 +340,7 @@ placeholder="图片地址">
 
 
 
-<button onclick="addTask()">
+<button id="addBtn" onclick="addTask()">
 
 上传任务
 
@@ -358,20 +391,20 @@ class="timeline">
 
 
 
-
-
-
-
 <script>
 
 
+// ===== JSONBin 配置 =====
 
-let tasks =
-JSON.parse(
-localStorage.getItem("penguinTasks")
-||
-"[]"
-);
+const BIN_ID = "6a53b40cf5f4af5e298490c5";
+
+const API_KEY = "$2a$10$CLgGEi5taFIEyJvW9zoHU.DD0i2d2vZtH1Wr7qXtQDIl2ud9RwoZm";
+
+const API_URL = "https://api.jsonbin.io/v3/b/" + BIN_ID;
+
+
+let tasks = [];
+
 
 
 function autoResize(element){
@@ -382,6 +415,19 @@ element.style.height =
 element.scrollHeight + "px";
 
 }
+
+
+
+function setStatus(text, isError){
+
+let el = document.getElementById("syncStatus");
+
+el.textContent = text;
+
+el.className = isError ? "status error" : "status";
+
+}
+
 
 
 function login(){
@@ -412,7 +458,7 @@ document.getElementById("main")
 .classList.remove("hidden");
 
 
-showTasks();
+loadTasks();
 
 
 }
@@ -433,9 +479,131 @@ alert(
 
 
 
+// ===== 从云端读取任务 =====
+
+async function loadTasks(){
 
 
-function addTask(){
+setStatus("云端同步中...", false);
+
+
+try{
+
+
+let res = await fetch(API_URL + "/latest", {
+
+headers: { "X-Master-Key": API_KEY }
+
+});
+
+
+if(!res.ok){
+
+throw new Error("HTTP " + res.status);
+
+}
+
+
+let data = await res.json();
+
+
+tasks = (data.record && data.record.tasks) ? data.record.tasks : [];
+
+
+setStatus("云端同步成功 ✓", false);
+
+
+showTasks();
+
+
+}
+
+catch(err){
+
+
+setStatus("云端读取失败，请检查网络后重试", true);
+
+
+console.error(err);
+
+
+}
+
+
+}
+
+
+
+
+// ===== 保存任务到云端 =====
+
+async function saveTasks(){
+
+
+document.getElementById("addBtn").disabled = true;
+
+
+setStatus("正在保存到云端...", false);
+
+
+try{
+
+
+let res = await fetch(API_URL, {
+
+method: "PUT",
+
+headers: {
+
+"Content-Type": "application/json",
+
+"X-Master-Key": API_KEY
+
+},
+
+body: JSON.stringify({ tasks: tasks })
+
+});
+
+
+if(!res.ok){
+
+throw new Error("HTTP " + res.status);
+
+}
+
+
+setStatus("云端同步成功 ✓", false);
+
+
+}
+
+catch(err){
+
+
+setStatus("保存失败，请检查网络后重试", true);
+
+
+console.error(err);
+
+
+}
+
+finally{
+
+
+document.getElementById("addBtn").disabled = false;
+
+
+}
+
+
+}
+
+
+
+
+async function addTask(){
 
 
 let task={
@@ -466,18 +634,20 @@ tasks.unshift(task);
 
 
 
-localStorage.setItem(
-
-"penguinTasks",
-
-JSON.stringify(tasks)
-
-);
-
-
-
 showTasks();
 
+
+await saveTasks();
+
+
+
+document.getElementById("date").value = "";
+
+document.getElementById("title").value = "";
+
+document.getElementById("content").value = "";
+
+document.getElementById("photo").value = "";
 
 
 
@@ -583,7 +753,7 @@ tasks.length;
 
 
 
-function deleteTask(index){
+async function deleteTask(index){
 
 
 let result =
@@ -603,17 +773,10 @@ tasks.splice(index,1);
 
 
 
-localStorage.setItem(
-
-"penguinTasks",
-
-JSON.stringify(tasks)
-
-);
-
-
-
 showTasks();
+
+
+await saveTasks();
 
 
 
