@@ -1,812 +1,983 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="zh-CN">
 <head>
-
 <meta charset="UTF-8">
-
-<title>
-Antarctic Ice-Breaking Office, Shanghai Branch 南极破冰驻沪办
-</title>
-
-
+<title>Antarctic Ice-Breaking Office, Shanghai Branch 南极破冰驻沪办</title>
 <style>
-
-
-body{
-
-margin:0;
-
-background:#f7f3ea;
-
-font-family:"Microsoft YaHei";
-
-color:#233746;
-
+body {
+  margin: 0;
+  background: #f7f3ea;
+  font-family: "Microsoft YaHei", sans-serif;
+  color: #233746;
 }
 
-
-.container{
-
-max-width:700px;
-
-margin:auto;
-
-padding:25px;
-
+.container {
+  max-width: 700px;
+  margin: auto;
+  padding: 25px;
 }
 
-
-.card{
-
-background:white;
-
-padding:25px;
-
-border-radius:20px;
-
-margin-bottom:20px;
-
-box-shadow:0 5px 20px #ddd;
-
+.card {
+  background: white;
+  padding: 25px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 5px 20px #ddd;
 }
 
-
-.logo{
-
-text-align:center;
-
-font-size:70px;
-
+.card.special {
+  background: linear-gradient(160deg, #0f1419 0%, #1a2332 45%, #243447 100%);
+  color: #d8e4ed;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.45);
+  border: 1px solid #3a4f63;
 }
 
-
-.logo img{
-
-max-width:180px;
-
-height:auto;
-
+.card.special input,
+.card.special textarea,
+.card.special select {
+  background: rgba(15, 20, 25, 0.85);
+  color: #e8f0f5;
+  border: 1px solid #4a6075;
 }
 
-
-button{
-
-background:#29465b;
-
-color:white;
-
-border:0;
-
-padding:12px 20px;
-
-border-radius:12px;
-
-cursor:pointer;
-
+.card.special input::placeholder,
+.card.special textarea::placeholder {
+  color: #7a8f9f;
 }
 
-
-button:hover{
-
-opacity:0.85;
-
+.card.special h2,
+.card.special h3,
+.card.special p {
+  color: #e8f0f5;
 }
 
-
-button:disabled{
-
-opacity:0.5;
-
-cursor:not-allowed;
-
+.card.special button {
+  background: #5a4a7b;
 }
 
-
-input,textarea{
-
-width:100%;
-
-padding:12px;
-
-margin:8px 0;
-
-box-sizing:border-box;
-
-border-radius:10px;
-
-border:1px solid #ccc;
-
+.card.special button:hover {
+  background: #6d5a94;
 }
 
-
-.hidden{
-
-display:none;
-
+.logo {
+  text-align: center;
+  font-size: 70px;
 }
 
-
-.timeline{
-
-border-left:3px solid #9ac4dd;
-
-padding-left:20px;
-
+.logo img {
+  max-width: 180px;
+  height: auto;
 }
 
-
-.task{
-
-background:#fff;
-
-padding:15px;
-
-border-radius:15px;
-
-margin:15px 0;
-
+button {
+  background: #29465b;
+  color: white;
+  border: 0;
+  padding: 12px 20px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-family: inherit;
 }
 
-
-
-.delete-btn{
-
-background:#8b3a3a;
-
-margin-top:10px;
-
+button:hover {
+  opacity: 0.85;
 }
 
-
-.status{
-
-text-align:center;
-
-font-size:14px;
-
-color:#8a8a8a;
-
-margin:5px 0 15px 0;
-
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-
-.status.error{
-
-color:#b23a3a;
-
+.special-toggle-btn {
+  background: linear-gradient(135deg, #1a2332 0%, #2d1f45 100%);
+  width: 100%;
+  margin-bottom: 20px;
+  font-size: 15px;
+  border: 1px solid #4a3a6b;
 }
 
+.special-toggle-btn.active {
+  background: linear-gradient(135deg, #2d1f45 0%, #4a3a6b 100%);
+  border-color: #8b7ab8;
+}
 
+input, textarea, select {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  box-sizing: border-box;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-family: inherit;
+}
 
+.hidden {
+  display: none !important;
+}
+
+.filter-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 10px;
+  margin: 10px 0;
+}
+
+.filter-row select {
+  margin: 0;
+}
+
+.filter-hint {
+  font-size: 13px;
+  color: #888;
+  margin: 5px 0 0 0;
+}
+
+.filter-result {
+  font-size: 14px;
+  color: #29465b;
+  margin-top: 10px;
+}
+
+.clear-filter-btn {
+  background: #6a8a9a;
+  margin-top: 10px;
+  width: 100%;
+}
+
+.timeline {
+  border-left: 3px solid #9ac4dd;
+  padding-left: 20px;
+}
+
+.timeline.special-timeline {
+  border-left-color: #8b7ab8;
+}
+
+.task {
+  background: #fff;
+  padding: 15px;
+  border-radius: 15px;
+  margin: 15px 0;
+}
+
+.task.special-task {
+  background: linear-gradient(135deg, #151c24 0%, #1e2836 100%);
+  border: 1px solid #3a4f63;
+  color: #d8e4ed;
+}
+
+.task.special-task h2,
+.task.special-task h3,
+.task.special-task p {
+  color: #e8f0f5;
+}
+
+.task-badge {
+  display: inline-block;
+  font-size: 12px;
+  background: #8b7ab8;
+  color: white;
+  padding: 2px 8px;
+  border-radius: 8px;
+  margin-bottom: 8px;
+}
+
+.delete-btn {
+  background: #8b3a3a;
+  margin-top: 10px;
+}
+
+.status {
+  text-align: center;
+  font-size: 14px;
+  color: #8a8a8a;
+  margin: 5px 0 15px 0;
+}
+
+.status.error {
+  color: #b23a3a;
+}
+
+.photo-input-wrap {
+  border: 2px dashed #9ac4dd;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  margin: 8px 0;
+}
+
+.card.special .photo-input-wrap {
+  border-color: #5a4a7b;
+  background: rgba(0, 0, 0, 0.2);
+}
+
+.photo-input-wrap input[type="file"] {
+  border: none;
+  padding: 0;
+}
+
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.preview-item {
+  position: relative;
+}
+
+.preview-item img {
+  width: 100%;
+  height: 80px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.preview-item .remove-thumb {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  background: #8b3a3a;
+  color: white;
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  line-height: 20px;
+  text-align: center;
+  cursor: pointer;
+  padding: 0;
+}
+
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+  gap: 6px;
+  margin: 10px 0;
+}
+
+.gallery img {
+  width: 100%;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.upload-progress {
+  font-size: 13px;
+  color: #29465b;
+  margin-top: 5px;
+}
+
+.card.special .upload-progress {
+  color: #d4c8e8;
+}
+
+.empty-hint {
+  color: #aaa;
+  font-size: 14px;
+  padding: 10px 0;
+}
+
+.card.special .empty-hint {
+  color: #7a8f9f;
+}
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+.modal-overlay:not(.hidden) {
+  display: flex;
+}
+
+.modal {
+  background: white;
+  border-radius: 20px;
+  padding: 28px;
+  max-width: 420px;
+  width: 100%;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+}
+
+.modal.dark {
+  background: linear-gradient(160deg, #0f1419 0%, #1a2332 100%);
+  color: #e8f0f5;
+  border: 1px solid #3a4f63;
+}
+
+.modal h3 {
+  margin: 0 0 16px 0;
+  font-size: 18px;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.modal-actions button {
+  flex: 1;
+}
+
+.modal-cancel-btn {
+  background: #6a8a9a;
+}
+
+.quiz-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0;
+}
+
+.quiz-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.modal.dark .quiz-option {
+  border-color: #4a6075;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.quiz-option:hover {
+  background: #f0f4f7;
+}
+
+.modal.dark .quiz-option:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.quiz-option input {
+  width: auto;
+  margin: 0;
+}
+
+.quiz-error {
+  color: #b23a3a;
+  font-size: 13px;
+  margin-top: 8px;
+  min-height: 18px;
+}
+
+.modal.dark .quiz-error {
+  color: #e88;
+}
 </style>
-
-
 </head>
-
-
-
 <body>
-
-
 
 <div class="container">
 
+  <!-- 登录 -->
+  <div id="login" class="card">
+    <div class="logo"><img src="logo-final.jpg" alt="logo"></div>
+    <h2 align="center">南极破冰驻沪办<br>Antarctic Ice-Breaking Office, Shanghai Branch</h2>
+    <p align="center">员工认证系统</p>
+    <input id="username" placeholder="员工ID">
+    <input id="password" type="password" placeholder="密码">
+    <button onclick="login()">进入企鹅档案库</button>
+  </div>
 
+  <!-- 主界面 -->
+  <div id="main" class="hidden">
+    <div class="logo"><img src="logo-final.jpg" alt="logo"></div>
+    <h1 align="center">南极破冰驻沪办</h1>
+    <p align="center">Antarctic Icebreaking Office<br>Shanghai Branch</p>
+    <p id="syncStatus" class="status">云端同步中...</p>
 
-<div id="login" class="card">
+    <div class="card">
+      <h3>这里保存了一只企鹅参与过的人类友情任务。</h3>
+      <p>📦 已完成任务：<span id="count">0</span></p>
+      <p id="hiddenCountWrap" class="hidden">🔐 特殊任务：<span id="hiddenCount">0</span></p>
+    </div>
 
+    <!-- 特殊任务入口 -->
+    <button id="specialToggleBtn" class="special-toggle-btn" onclick="toggleSpecialSection()">
+      🔐 特殊任务通道
+    </button>
 
-<div class="logo">
+    <!-- 新增普通任务 -->
+    <div class="card">
+      <h2>新增任务</h2>
+      <input id="date" placeholder="日期，例如 2026.07.10">
+      <input id="title" placeholder="任务名称">
+      <textarea id="content" placeholder="企鹅任务日志" oninput="autoResize(this)"></textarea>
+      <div class="photo-input-wrap">
+        <input id="photos" type="file" accept="image/*" multiple onchange="handlePhotoSelect(event, 'normal')">
+        <p style="font-size:13px;color:#888;margin:5px 0 0 0;">可多选或多次拍照追加，点击下方缩略图右上角可移除</p>
+        <div id="previewGrid" class="preview-grid"></div>
+      </div>
+      <div id="uploadProgress" class="upload-progress"></div>
+      <button id="addBtn" onclick="addTask(false)">上传任务</button>
+    </div>
 
-<img src="logo-final.jpg">
+    <!-- 特殊任务上传（默认隐藏） -->
+    <div id="specialSection" class="hidden">
+      <div class="card special">
+        <h2>🔐 特殊任务</h2>
+        <p style="font-size:14px;opacity:0.85;">此通道记录不对外公开的企鹅行动。</p>
+        <input id="specialDate" placeholder="日期，例如 2026.07.10">
+        <input id="specialTitle" placeholder="特殊任务名称">
+        <textarea id="specialContent" placeholder="特殊任务日志" oninput="autoResize(this)"></textarea>
+        <div class="photo-input-wrap">
+          <input id="specialPhotos" type="file" accept="image/*" multiple onchange="handlePhotoSelect(event, 'special')">
+          <p style="font-size:13px;opacity:0.75;margin:5px 0 0 0;">可多选或多次拍照追加，点击下方缩略图右上角可移除</p>
+          <div id="specialPreviewGrid" class="preview-grid"></div>
+        </div>
+        <div id="specialUploadProgress" class="upload-progress"></div>
+        <button id="specialAddBtn" onclick="addTask(true)">上传特殊任务</button>
+      </div>
+    </div>
 
+    <!-- 日期筛选 -->
+    <div class="card">
+      <h2>📅 任务时间表</h2>
+      <p class="filter-hint">选择年月日筛选任务；仅选年份显示当年全部，选到月份显示当月，选到日期只显示当日。</p>
+      <div class="filter-row">
+        <select id="filterYear" onchange="onFilterChange()">
+          <option value="">全部年份</option>
+        </select>
+        <select id="filterMonth" onchange="onFilterChange()">
+          <option value="">全部月份</option>
+        </select>
+        <select id="filterDay" onchange="onFilterChange()">
+          <option value="">全部日期</option>
+        </select>
+      </div>
+      <button class="clear-filter-btn" onclick="clearFilter()">清除筛选</button>
+      <p id="filterResult" class="filter-result"></p>
+    </div>
+
+    <!-- 普通任务时间轴 -->
+    <div class="card">
+      <h2>🐾 企鹅执行时间轴</h2>
+      <div id="timeline" class="timeline"></div>
+    </div>
+
+    <!-- 特殊任务时间轴（默认隐藏） -->
+    <div id="specialTimelineCard" class="card special hidden">
+      <h2>🔐 特殊任务档案</h2>
+      <div id="specialTimeline" class="timeline special-timeline"></div>
+    </div>
+
+    <button onclick="logout()">退出办公室</button>
+  </div>
 </div>
 
-
-<h2 align="center">
-
-南极破冰驻沪办<br>
-Antarctic Ice-Breaking Office, Shanghai Branch
-
-</h2>
-
-
-<p align="center">
-
-员工认证系统
-
-</p>
-
-
-
-<input id="username"
-placeholder="员工ID">
-
-
-<input id="password"
-type="password"
-placeholder="密码">
-
-
-
-<button onclick="login()">
-
-进入企鹅档案库
-
-</button>
-
-
-
+<!-- 特殊任务密码弹窗 -->
+<div id="specialPasswordModal" class="modal-overlay hidden" onclick="if(event.target===this)closeSpecialPasswordModal()">
+  <div class="modal dark">
+    <h3>🔐 特殊任务通道验证</h3>
+    <p style="font-size:14px;opacity:0.85;margin:0 0 12px 0;">请输入特殊任务密码以进入隐藏通道</p>
+    <input id="specialPasswordInput" type="password" placeholder="特殊任务密码" onkeydown="if(event.key==='Enter')confirmSpecialPassword()">
+    <p id="specialPasswordError" class="quiz-error"></p>
+    <div class="modal-actions">
+      <button class="modal-cancel-btn" onclick="closeSpecialPasswordModal()">取消</button>
+      <button onclick="confirmSpecialPassword()">验证进入</button>
+    </div>
+  </div>
 </div>
 
-
-
-
-
-<div id="main"
-class="hidden">
-
-
-
-<div class="logo">
-
-<img src="logo-final.jpg">
-
+<!-- 删除任务验证弹窗 -->
+<div id="deleteQuizModal" class="modal-overlay hidden" onclick="if(event.target===this)closeDeleteQuiz()">
+  <div class="modal">
+    <h3>删除任务验证</h3>
+    <p style="font-size:14px;color:#666;margin:0 0 8px 0;">删除任务需要回答以下问题，答对后方可删除。</p>
+    <p style="font-weight:bold;margin:12px 0 8px 0;">Q：两位任务对象第一次约会餐饮是哪国菜系？</p>
+    <div class="quiz-options" id="deleteQuizOptions">
+      <label class="quiz-option"><input type="radio" name="deleteQuiz" value="英国"> 英国</label>
+      <label class="quiz-option"><input type="radio" name="deleteQuiz" value="日本"> 日本</label>
+      <label class="quiz-option"><input type="radio" name="deleteQuiz" value="中国"> 中国</label>
+      <label class="quiz-option"><input type="radio" name="deleteQuiz" value="沙特阿拉伯"> 沙特阿拉伯</label>
+      <label class="quiz-option"><input type="radio" name="deleteQuiz" value="西班牙"> 西班牙</label>
+      <label class="quiz-option"><input type="radio" name="deleteQuiz" value="葡萄牙"> 葡萄牙</label>
+    </div>
+    <p id="deleteQuizError" class="quiz-error"></p>
+    <div class="modal-actions">
+      <button class="modal-cancel-btn" onclick="closeDeleteQuiz()">取消</button>
+      <button onclick="submitDeleteQuiz()">确认删除</button>
+    </div>
+  </div>
 </div>
-
-
-
-<h1 align="center">
-
-南极破冰驻沪办
-
-</h1>
-
-
-<p align="center">
-
-Antarctic Icebreaking Office<br>
-
-Shanghai Branch
-
-</p>
-
-
-<p id="syncStatus" class="status">
-云端同步中...
-</p>
-
-
-
-
-<div class="card">
-
-
-<h3>
-
-这里保存了一只企鹅参与过的人类友情任务。
-
-</h3>
-
-
-<p>
-
-📦 已完成任务：
-
-<span id="count">
-0
-</span>
-
-</p>
-
-
-</div>
-
-
-
-
-
-<div class="card">
-
-
-<h2>
-
-新增任务
-
-</h2>
-
-
-
-<input id="date"
-placeholder="日期，例如 2026.07.10">
-
-
-<input id="title"
-placeholder="任务名称">
-
-
-<textarea id="content"
-placeholder="企鹅任务日志"
-oninput="autoResize(this)">
-</textarea>
-
-
-
-<input id="photo"
-placeholder="图片地址">
-
-
-
-
-<button id="addBtn" onclick="addTask()">
-
-上传任务
-
-</button>
-
-
-
-</div>
-
-
-
-
-
-<div class="card">
-
-
-<h2>
-
-🐾 企鹅执行时间轴
-
-</h2>
-
-
-<div id="timeline"
-class="timeline">
-
-</div>
-
-
-</div>
-
-
-
-<button onclick="logout()">
-
-退出办公室
-
-</button>
-
-
-
-</div>
-
-
-
-</div>
-
-
-
 
 <script>
-
-
-// ===== JSONBin 配置 =====
-
 const BIN_ID = "6a53b40cf5f4af5e298490c5";
-
 const API_KEY = "$2a$10$CLgGEi5taFIEyJvW9zoHU.DD0i2d2vZtH1Wr7qXtQDIl2ud9RwoZm";
-
 const API_URL = "https://api.jsonbin.io/v3/b/" + BIN_ID;
 
+const CLOUD_NAME = "geqluddd";
+const UPLOAD_PRESET = "A-Tribute-to-Friendship";
+const CLOUDINARY_URL = "https://api.cloudinary.com/v1_1/" + CLOUD_NAME + "/image/upload";
+
+const SPECIAL_TASK_PASSWORD = "SHMN";
+const DELETE_QUIZ_ANSWER = "西班牙";
 
 let tasks = [];
+let hiddenTasks = [];
+let selectedFiles = [];
+let specialSelectedFiles = [];
+let specialSectionVisible = false;
+let pendingDeleteTaskId = null;
+let pendingDeleteIsSpecial = false;
 
+let filterYear = "";
+let filterMonth = "";
+let filterDay = "";
 
-
-function autoResize(element){
-
-element.style.height = "auto";
-
-element.style.height =
-element.scrollHeight + "px";
-
+function autoResize(el) {
+  el.style.height = "auto";
+  el.style.height = el.scrollHeight + "px";
 }
 
-
-
-function setStatus(text, isError){
-
-let el = document.getElementById("syncStatus");
-
-el.textContent = text;
-
-el.className = isError ? "status error" : "status";
-
+function setStatus(text, isError) {
+  const el = document.getElementById("syncStatus");
+  el.textContent = text;
+  el.className = isError ? "status error" : "status";
 }
 
-
-
-function login(){
-
-
-let u =
-document.getElementById("username").value;
-
-
-let p =
-document.getElementById("password").value;
-
-
-
-if(
-u==="ER79"
-&&
-p==="7799"
-
-){
-
-
-document.getElementById("login")
-.style.display="none";
-
-
-document.getElementById("main")
-.classList.remove("hidden");
-
-
-loadTasks();
-
-
+function login() {
+  const u = document.getElementById("username").value;
+  const p = document.getElementById("password").value;
+  if (u === "ER79" && p === "7799") {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("main").classList.remove("hidden");
+    loadTasks();
+  } else {
+    alert("企鹅总部认证失败");
+  }
 }
 
-else{
-
-
-alert(
-"企鹅总部认证失败"
-);
-
-
+function toggleSpecialSection() {
+  if (specialSectionVisible) {
+    setSpecialSectionVisible(false);
+    return;
+  }
+  document.getElementById("specialPasswordInput").value = "";
+  document.getElementById("specialPasswordError").textContent = "";
+  document.getElementById("specialPasswordModal").classList.remove("hidden");
+  setTimeout(() => document.getElementById("specialPasswordInput").focus(), 100);
 }
 
-
+function closeSpecialPasswordModal() {
+  document.getElementById("specialPasswordModal").classList.add("hidden");
+  document.getElementById("specialPasswordInput").value = "";
+  document.getElementById("specialPasswordError").textContent = "";
 }
 
-
-
-
-// ===== 从云端读取任务 =====
-
-async function loadTasks(){
-
-
-setStatus("云端同步中...", false);
-
-
-try{
-
-
-let res = await fetch(API_URL + "/latest", {
-
-headers: { "X-Master-Key": API_KEY }
-
-});
-
-
-if(!res.ok){
-
-throw new Error("HTTP " + res.status);
-
+function confirmSpecialPassword() {
+  const input = document.getElementById("specialPasswordInput").value.trim();
+  if (input !== SPECIAL_TASK_PASSWORD) {
+    document.getElementById("specialPasswordError").textContent = "特殊任务密码错误，无法进入通道";
+    return;
+  }
+  closeSpecialPasswordModal();
+  setSpecialSectionVisible(true);
 }
 
-
-let data = await res.json();
-
-
-tasks = (data.record && data.record.tasks) ? data.record.tasks : [];
-
-
-setStatus("云端同步成功 ✓", false);
-
-
-showTasks();
-
-
+function setSpecialSectionVisible(visible) {
+  specialSectionVisible = visible;
+  document.getElementById("specialSection").classList.toggle("hidden", !visible);
+  document.getElementById("specialTimelineCard").classList.toggle("hidden", !visible);
+  document.getElementById("hiddenCountWrap").classList.toggle("hidden", !visible);
+  const btn = document.getElementById("specialToggleBtn");
+  btn.textContent = visible ? "🔐 收起特殊任务通道" : "🔐 特殊任务通道";
+  btn.classList.toggle("active", visible);
 }
 
-catch(err){
-
-
-setStatus("云端读取失败，请检查网络后重试", true);
-
-
-console.error(err);
-
-
+function parseTaskDate(dateStr) {
+  if (!dateStr) return null;
+  const cleaned = String(dateStr).trim().replace(/[\/\-]/g, ".");
+  const parts = cleaned.split(".").map(Number);
+  if (parts.length < 3 || parts.some(isNaN)) return null;
+  return { year: parts[0], month: parts[1], day: parts[2], raw: cleaned };
 }
 
-
+function compareTasksByDate(a, b) {
+  const da = parseTaskDate(a.date);
+  const db = parseTaskDate(b.date);
+  if (!da && !db) return 0;
+  if (!da) return 1;
+  if (!db) return -1;
+  if (da.year !== db.year) return db.year - da.year;
+  if (da.month !== db.month) return db.month - da.month;
+  return db.day - da.day;
 }
 
-
-
-
-// ===== 保存任务到云端 =====
-
-async function saveTasks(){
-
-
-document.getElementById("addBtn").disabled = true;
-
-
-setStatus("正在保存到云端...", false);
-
-
-try{
-
-
-let res = await fetch(API_URL, {
-
-method: "PUT",
-
-headers: {
-
-"Content-Type": "application/json",
-
-"X-Master-Key": API_KEY
-
-},
-
-body: JSON.stringify({ tasks: tasks })
-
-});
-
-
-if(!res.ok){
-
-throw new Error("HTTP " + res.status);
-
+function taskMatchesFilter(task) {
+  const d = parseTaskDate(task.date);
+  if (!d) return !filterYear && !filterMonth && !filterDay;
+  if (filterYear && d.year !== Number(filterYear)) return false;
+  if (filterMonth && d.month !== Number(filterMonth)) return false;
+  if (filterDay && d.day !== Number(filterDay)) return false;
+  return true;
 }
 
-
-setStatus("云端同步成功 ✓", false);
-
-
+function getAllTasksCombined() {
+  return tasks.concat(hiddenTasks);
 }
 
-catch(err){
-
-
-setStatus("保存失败，请检查网络后重试", true);
-
-
-console.error(err);
-
-
+function populateYearOptions() {
+  const yearSelect = document.getElementById("filterYear");
+  const years = new Set();
+  getAllTasksCombined().forEach(t => {
+    const d = parseTaskDate(t.date);
+    if (d) years.add(d.year);
+  });
+  const currentYear = new Date().getFullYear();
+  years.add(currentYear);
+  const sorted = Array.from(years).sort((a, b) => b - a);
+  const saved = filterYear;
+  yearSelect.innerHTML = '<option value="">全部年份</option>' +
+    sorted.map(y => `<option value="${y}">${y} 年</option>`).join("");
+  yearSelect.value = saved;
 }
 
-finally{
-
-
-document.getElementById("addBtn").disabled = false;
-
-
+function populateMonthOptions() {
+  const monthSelect = document.getElementById("filterMonth");
+  const saved = filterMonth;
+  let months = [];
+  if (filterYear) {
+    const set = new Set();
+    getAllTasksCombined().forEach(t => {
+      const d = parseTaskDate(t.date);
+      if (d && d.year === Number(filterYear)) set.add(d.month);
+    });
+    months = Array.from(set).sort((a, b) => a - b);
+  } else {
+    months = Array.from({ length: 12 }, (_, i) => i + 1);
+  }
+  monthSelect.innerHTML = '<option value="">全部月份</option>' +
+    months.map(m => `<option value="${m}">${m} 月</option>`).join("");
+  monthSelect.value = saved;
 }
 
-
+function populateDayOptions() {
+  const daySelect = document.getElementById("filterDay");
+  const saved = filterDay;
+  let days = [];
+  if (filterYear && filterMonth) {
+    const set = new Set();
+    getAllTasksCombined().forEach(t => {
+      const d = parseTaskDate(t.date);
+      if (d && d.year === Number(filterYear) && d.month === Number(filterMonth)) {
+        set.add(d.day);
+      }
+    });
+    days = Array.from(set).sort((a, b) => a - b);
+  } else if (filterMonth) {
+    days = Array.from({ length: 31 }, (_, i) => i + 1);
+  } else {
+    days = Array.from({ length: 31 }, (_, i) => i + 1);
+  }
+  daySelect.innerHTML = '<option value="">全部日期</option>' +
+    days.map(d => `<option value="${d}">${d} 日</option>`).join("");
+  daySelect.value = saved;
 }
 
-
-
-
-async function addTask(){
-
-
-let task={
-
-
-date:
-document.getElementById("date").value,
-
-
-title:
-document.getElementById("title").value,
-
-
-content:
-document.getElementById("content").value,
-
-
-photo:
-document.getElementById("photo").value
-
-
-};
-
-
-
-
-tasks.unshift(task);
-
-
-
-showTasks();
-
-
-await saveTasks();
-
-
-
-document.getElementById("date").value = "";
-
-document.getElementById("title").value = "";
-
-document.getElementById("content").value = "";
-
-document.getElementById("photo").value = "";
-
-
-
+function onFilterChange() {
+  filterYear = document.getElementById("filterYear").value;
+  filterMonth = document.getElementById("filterMonth").value;
+  filterDay = document.getElementById("filterDay").value;
+  populateMonthOptions();
+  populateDayOptions();
+  showTasks();
 }
 
-
-
-
-
-
-
-
-function showTasks(){
-
-
-let box =
-document.getElementById("timeline");
-
-
-box.innerHTML="";
-
-
-
-tasks.forEach((t,index)=>{
-
-
-
-box.innerHTML+=`
-
-
-<div class="task">
-
-
-<h3>
-
-${t.date}
-
-</h3>
-
-
-<h2>
-
-${t.title}
-
-</h2>
-
-
-<p>
-
-${t.content}
-
-</p>
-
-
-
-${t.photo?
-
-"<img src='"+t.photo+"' width='100%'>"
-
-:
-
-""
-
+function clearFilter() {
+  filterYear = "";
+  filterMonth = "";
+  filterDay = "";
+  document.getElementById("filterYear").value = "";
+  document.getElementById("filterMonth").value = "";
+  document.getElementById("filterDay").value = "";
+  populateMonthOptions();
+  populateDayOptions();
+  showTasks();
 }
 
-
-
-<br>
-
-
-<button class="delete-btn"
-
-onclick="deleteTask(${index})">
-
-删除此任务
-
-</button>
-
-
-
-</div>
-
-
-`;
-
-
-
-});
-
-
-
-document.getElementById("count")
-.innerHTML =
-tasks.length;
-
-
-
+function updateFilterResult(filteredNormal, filteredHidden) {
+  const el = document.getElementById("filterResult");
+  const total = filteredNormal.length + filteredHidden.length;
+  let label = "当前显示 ";
+  if (filterYear && filterMonth && filterDay) {
+    label += `${filterYear}年${filterMonth}月${filterDay}日`;
+  } else if (filterYear && filterMonth) {
+    label += `${filterYear}年${filterMonth}月`;
+  } else if (filterYear) {
+    label += `${filterYear}年`;
+  } else {
+    label += "全部";
+  }
+  label += ` 共 ${total} 条任务`;
+  if (specialSectionVisible && filteredHidden.length > 0) {
+    label += `（含 ${filteredHidden.length} 条特殊任务）`;
+  }
+  el.textContent = label;
 }
 
-
-
-
-
-
-
-async function deleteTask(index){
-
-
-let result =
-confirm(
-
-"确定删除这个企鹅任务吗？\n删除后无法恢复。"
-
-);
-
-
-
-if(result){
-
-
-
-tasks.splice(index,1);
-
-
-
-showTasks();
-
-
-await saveTasks();
-
-
-
+async function loadTasks() {
+  setStatus("云端同步中...", false);
+  try {
+    const res = await fetch(API_URL + "/latest", {
+      headers: { "X-Master-Key": API_KEY }
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    const data = await res.json();
+    tasks = (data.record && data.record.tasks) ? data.record.tasks : [];
+    hiddenTasks = (data.record && data.record.hiddenTasks) ? data.record.hiddenTasks : [];
+    tasks.forEach(ensureTaskId);
+    hiddenTasks.forEach(ensureTaskId);
+    populateYearOptions();
+    populateMonthOptions();
+    populateDayOptions();
+    setStatus("云端同步成功 ✓", false);
+    showTasks();
+  } catch (err) {
+    setStatus("云端读取失败，请检查网络后重试", true);
+    console.error(err);
+  }
 }
 
-
-
+function ensureTaskId(task) {
+  if (!task.id) {
+    task.id = "t_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8);
+  }
 }
 
-
-
-
-
-
-
-function logout(){
-
-
-location.reload();
-
-
-
+async function saveTasks() {
+  setStatus("正在保存到云端...", false);
+  try {
+    const res = await fetch(API_URL, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Master-Key": API_KEY
+      },
+      body: JSON.stringify({ tasks, hiddenTasks })
+    });
+    if (!res.ok) throw new Error("HTTP " + res.status);
+    populateYearOptions();
+    populateMonthOptions();
+    populateDayOptions();
+    setStatus("云端同步成功 ✓", false);
+  } catch (err) {
+    setStatus("保存失败，请检查网络后重试", true);
+    console.error(err);
+    throw err;
+  }
 }
 
+function handlePhotoSelect(event, mode) {
+  const files = Array.from(event.target.files);
+  if (mode === "special") {
+    specialSelectedFiles = specialSelectedFiles.concat(files);
+    renderPreview("special");
+  } else {
+    selectedFiles = selectedFiles.concat(files);
+    renderPreview("normal");
+  }
+  event.target.value = "";
+}
 
+function renderPreview(mode) {
+  const isSpecial = mode === "special";
+  const grid = document.getElementById(isSpecial ? "specialPreviewGrid" : "previewGrid");
+  const files = isSpecial ? specialSelectedFiles : selectedFiles;
+  grid.innerHTML = "";
+  files.forEach((file, index) => {
+    const url = URL.createObjectURL(file);
+    const item = document.createElement("div");
+    item.className = "preview-item";
+    item.innerHTML =
+      `<img src="${url}" alt="preview">` +
+      `<button type="button" class="remove-thumb" onclick="removeSelectedPhoto(${index}, '${mode}')">×</button>`;
+    grid.appendChild(item);
+  });
+}
 
+function removeSelectedPhoto(index, mode) {
+  if (mode === "special") {
+    specialSelectedFiles.splice(index, 1);
+    renderPreview("special");
+  } else {
+    selectedFiles.splice(index, 1);
+    renderPreview("normal");
+  }
+}
+
+async function uploadOnePhoto(file) {
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", UPLOAD_PRESET);
+  const res = await fetch(CLOUDINARY_URL, { method: "POST", body: formData });
+  if (!res.ok) throw new Error("图片上传失败 HTTP " + res.status);
+  const data = await res.json();
+  return data.secure_url;
+}
+
+async function uploadAllPhotos(files, progressElId) {
+  const urls = [];
+  const progressEl = document.getElementById(progressElId);
+  for (let i = 0; i < files.length; i++) {
+    progressEl.textContent = `正在上传照片 ${i + 1} / ${files.length} ...`;
+    urls.push(await uploadOnePhoto(files[i]));
+  }
+  progressEl.textContent = "";
+  return urls;
+}
+
+async function addTask(isSpecial) {
+  const dateVal = document.getElementById(isSpecial ? "specialDate" : "date").value;
+  const titleVal = document.getElementById(isSpecial ? "specialTitle" : "title").value;
+  const contentVal = document.getElementById(isSpecial ? "specialContent" : "content").value;
+  const files = isSpecial ? specialSelectedFiles : selectedFiles;
+  const btnId = isSpecial ? "specialAddBtn" : "addBtn";
+  const progressId = isSpecial ? "specialUploadProgress" : "uploadProgress";
+
+  if (!titleVal) {
+    alert("请填写任务名称");
+    return;
+  }
+
+  document.getElementById(btnId).disabled = true;
+  try {
+    let photoUrls = [];
+    if (files.length > 0) {
+      photoUrls = await uploadAllPhotos(files, progressId);
+    }
+    const task = {
+      id: "t_" + Date.now() + "_" + Math.random().toString(36).slice(2, 8),
+      date: dateVal,
+      title: titleVal,
+      content: contentVal,
+      photos: photoUrls
+    };
+    if (isSpecial) {
+      hiddenTasks.unshift(task);
+    } else {
+      tasks.unshift(task);
+    }
+    showTasks();
+    await saveTasks();
+
+    document.getElementById(isSpecial ? "specialDate" : "date").value = "";
+    document.getElementById(isSpecial ? "specialTitle" : "title").value = "";
+    document.getElementById(isSpecial ? "specialContent" : "content").value = "";
+    if (isSpecial) {
+      specialSelectedFiles = [];
+      renderPreview("special");
+    } else {
+      selectedFiles = [];
+      renderPreview("normal");
+    }
+  } catch (err) {
+    setStatus("任务上传失败，请检查网络后重试", true);
+    console.error(err);
+  } finally {
+    document.getElementById(btnId).disabled = false;
+  }
+}
+
+function buildGalleryHtml(task) {
+  let photoList = [];
+  if (task.photos && Array.isArray(task.photos)) {
+    photoList = task.photos;
+  } else if (task.photo) {
+    photoList = [task.photo];
+  }
+  if (photoList.length === 0) return "";
+  return `<div class="gallery">` +
+    photoList.map(p => `<img src="${p}" alt="photo" onclick="window.open('${p}','_blank')">`).join("") +
+    `</div>`;
+}
+
+function renderTaskList(list, containerId, isSpecial) {
+  const box = document.getElementById(containerId);
+  const filtered = list.filter(taskMatchesFilter).sort(compareTasksByDate);
+  if (filtered.length === 0) {
+    box.innerHTML = `<p class="empty-hint">${isSpecial ? "暂无特殊任务记录" : "暂无任务记录"}</p>`;
+    return filtered;
+  }
+  box.innerHTML = filtered.map(t => {
+    const badge = isSpecial ? `<span class="task-badge">特殊任务</span><br>` : "";
+    return `
+      <div class="task${isSpecial ? " special-task" : ""}">
+        ${badge}
+        <h3>${t.date || "未填写日期"}</h3>
+        <h2>${t.title}</h2>
+        <p>${t.content || ""}</p>
+        ${buildGalleryHtml(t)}
+        <br>
+        <button class="delete-btn" onclick="deleteTask('${t.id}', ${isSpecial})">删除此任务</button>
+      </div>`;
+  }).join("");
+  return filtered;
+}
+
+function showTasks() {
+  const filteredNormal = renderTaskList(tasks, "timeline", false);
+  const filteredHidden = renderTaskList(hiddenTasks, "specialTimeline", true);
+  document.getElementById("count").textContent = tasks.length;
+  document.getElementById("hiddenCount").textContent = hiddenTasks.length;
+  updateFilterResult(filteredNormal, filteredHidden);
+}
+
+async function deleteTask(taskId, isSpecial) {
+  pendingDeleteTaskId = taskId;
+  pendingDeleteIsSpecial = isSpecial;
+  document.querySelectorAll('input[name="deleteQuiz"]').forEach(r => { r.checked = false; });
+  document.getElementById("deleteQuizError").textContent = "";
+  document.getElementById("deleteQuizModal").classList.remove("hidden");
+}
+
+function closeDeleteQuiz() {
+  document.getElementById("deleteQuizModal").classList.add("hidden");
+  pendingDeleteTaskId = null;
+  pendingDeleteIsSpecial = false;
+  document.getElementById("deleteQuizError").textContent = "";
+}
+
+async function submitDeleteQuiz() {
+  const selected = document.querySelector('input[name="deleteQuiz"]:checked');
+  if (!selected) {
+    document.getElementById("deleteQuizError").textContent = "请选择一个答案";
+    return;
+  }
+  if (selected.value !== DELETE_QUIZ_ANSWER) {
+    document.getElementById("deleteQuizError").textContent = "答案错误，无法删除任务";
+    return;
+  }
+  const list = pendingDeleteIsSpecial ? hiddenTasks : tasks;
+  const index = list.findIndex(t => t.id === pendingDeleteTaskId);
+  closeDeleteQuiz();
+  if (index === -1) return;
+  list.splice(index, 1);
+  showTasks();
+  await saveTasks();
+}
+
+function logout() {
+  location.reload();
+}
 </script>
-
-
-
 </body>
-
 </html>
