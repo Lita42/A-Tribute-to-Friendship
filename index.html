@@ -308,12 +308,18 @@ input, textarea, select {
   max-width: 420px;
   width: 100%;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.35);
+  max-height: 90vh;
+  overflow-y: auto;
 }
 
 .modal.dark {
   background: linear-gradient(160deg, #0f1419 0%, #1a2332 100%);
   color: #e8f0f5;
   border: 1px solid #3a4f63;
+}
+
+.modal.dark .empty-hint {
+  color: #7a8f9f;
 }
 
 .modal h3 {
@@ -380,6 +386,21 @@ input, textarea, select {
 
 .modal.dark .quiz-error {
   color: #e88;
+}
+
+.task-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.task-actions button {
+  flex: 1;
+  margin-top: 0;
+}
+
+.edit-btn {
+  background: #3a6b8b;
 }
 </style>
 </head>
@@ -519,6 +540,32 @@ input, textarea, select {
   </div>
 </div>
 
+<!-- 编辑任务弹窗 -->
+<div id="editTaskModal" class="modal-overlay hidden" onclick="if(event.target===this)closeEditModal()">
+  <div class="modal" id="editTaskModalInner">
+    <h3>编辑任务</h3>
+    <input id="editDate" placeholder="日期，例如 2026.07.10">
+    <input id="editTitle" placeholder="任务名称">
+    <textarea id="editContent" placeholder="企鹅任务日志" oninput="autoResize(this)"></textarea>
+
+    <p style="font-size:13px;opacity:0.8;margin:10px 0 4px 0;">已上传照片（点击 × 移除）：</p>
+    <div id="editExistingPhotoGrid" class="preview-grid"></div>
+
+    <div class="photo-input-wrap">
+      <input id="editNewPhotos" type="file" accept="image/*" multiple onchange="handleEditPhotoSelect(event)">
+      <p style="font-size:13px;opacity:0.7;margin:5px 0 0 0;">可继续添加新照片</p>
+      <div id="editNewPhotoGrid" class="preview-grid"></div>
+    </div>
+
+    <div id="editUploadProgress" class="upload-progress"></div>
+
+    <div class="modal-actions">
+      <button class="modal-cancel-btn" onclick="closeEditModal()">取消</button>
+      <button id="editSaveBtn" onclick="saveEditTask()">保存修改</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const BIN_ID = "6a53b40cf5f4af5e298490c5";
 const API_KEY = "$2a$10$CLgGEi5taFIEyJvW9zoHU.DD0i2d2vZtH1Wr7qXtQDIl2ud9RwoZm";
@@ -538,6 +585,11 @@ let specialSelectedFiles = [];
 let specialSectionVisible = false;
 let pendingDeleteTaskId = null;
 let pendingDeleteIsSpecial = false;
+
+let editingTaskId = null;
+let editingIsSpecial = false;
+let editExistingPhotos = [];
+let editNewFiles = [];
 
 let filterYear = "";
 let filterMonth = "";
@@ -926,8 +978,10 @@ function renderTaskList(list, containerId, isSpecial) {
         <h2>${t.title}</h2>
         <p>${t.content || ""}</p>
         ${buildGalleryHtml(t)}
-        <br>
-        <button class="delete-btn" onclick="deleteTask('${t.id}', ${isSpecial})">删除此任务</button>
+        <div class="task-actions">
+          <button class="edit-btn" onclick="openEditModal('${t.id}', ${isSpecial})">编辑任务</button>
+          <button class="delete-btn" onclick="deleteTask('${t.id}', ${isSpecial})">删除此任务</button>
+        </div>
       </div>`;
   }).join("");
   return filtered;
@@ -973,6 +1027,119 @@ async function submitDeleteQuiz() {
   list.splice(index, 1);
   showTasks();
   await saveTasks();
+}
+
+function openEditModal(taskId, isSpecial) {
+  const list = isSpecial ? hiddenTasks : tasks;
+  const task = list.find(t => t.id === taskId);
+  if (!task) return;
+
+  editingTaskId = taskId;
+  editingIsSpecial = isSpecial;
+  editExistingPhotos = (task.photos && Array.isArray(task.photos))
+    ? task.photos.slice()
+    : (task.photo ? [task.photo] : []);
+  editNewFiles = [];
+
+  document.getElementById("editDate").value = task.date || "";
+  document.getElementById("editTitle").value = task.title || "";
+  document.getElementById("editContent").value = task.content || "";
+
+  renderEditExistingPhotos();
+  renderEditNewPreview();
+
+  const modalInner = document.getElementById("editTaskModalInner");
+  modalInner.classList.toggle("dark", isSpecial);
+
+  document.getElementById("editTaskModal").classList.remove("hidden");
+
+  setTimeout(() => autoResize(document.getElementById("editContent")), 50);
+}
+
+function closeEditModal() {
+  document.getElementById("editTaskModal").classList.add("hidden");
+  editingTaskId = null;
+  editingIsSpecial = false;
+  editExistingPhotos = [];
+  editNewFiles = [];
+}
+
+function renderEditExistingPhotos() {
+  const grid = document.getElementById("editExistingPhotoGrid");
+  if (editExistingPhotos.length === 0) {
+    grid.innerHTML = '<p class="empty-hint" style="margin:0;">暂无照片</p>';
+    return;
+  }
+  grid.innerHTML = editExistingPhotos.map((url, index) => `
+    <div class="preview-item">
+      <img src="${url}" alt="existing">
+      <button type="button" class="remove-thumb" onclick="removeEditExistingPhoto(${index})">×</button>
+    </div>`).join("");
+}
+
+function removeEditExistingPhoto(index) {
+  editExistingPhotos.splice(index, 1);
+  renderEditExistingPhotos();
+}
+
+function handleEditPhotoSelect(event) {
+  const files = Array.from(event.target.files);
+  editNewFiles = editNewFiles.concat(files);
+  renderEditNewPreview();
+  event.target.value = "";
+}
+
+function renderEditNewPreview() {
+  const grid = document.getElementById("editNewPhotoGrid");
+  grid.innerHTML = "";
+  editNewFiles.forEach((file, index) => {
+    const url = URL.createObjectURL(file);
+    const item = document.createElement("div");
+    item.className = "preview-item";
+    item.innerHTML = `<img src="${url}" alt="new"><button type="button" class="remove-thumb" onclick="removeEditNewPhoto(${index})">×</button>`;
+    grid.appendChild(item);
+  });
+}
+
+function removeEditNewPhoto(index) {
+  editNewFiles.splice(index, 1);
+  renderEditNewPreview();
+}
+
+async function saveEditTask() {
+  const titleVal = document.getElementById("editTitle").value;
+  if (!titleVal) {
+    alert("请填写任务名称");
+    return;
+  }
+
+  document.getElementById("editSaveBtn").disabled = true;
+  try {
+    let newUrls = [];
+    if (editNewFiles.length > 0) {
+      newUrls = await uploadAllPhotos(editNewFiles, "editUploadProgress");
+    }
+    const finalPhotos = editExistingPhotos.concat(newUrls);
+
+    const list = editingIsSpecial ? hiddenTasks : tasks;
+    const task = list.find(t => t.id === editingTaskId);
+    if (task) {
+      task.date = document.getElementById("editDate").value;
+      task.title = titleVal;
+      task.content = document.getElementById("editContent").value;
+      task.photos = finalPhotos;
+      delete task.photo;
+    }
+
+    closeEditModal();
+    showTasks();
+    await saveTasks();
+  } catch (err) {
+    setStatus("保存修改失败，请检查网络后重试", true);
+    console.error(err);
+  } finally {
+    document.getElementById("editSaveBtn").disabled = false;
+  }
 }
 
 function logout() {
